@@ -3,6 +3,8 @@ package com.rainday.movieexplorer.ui.model
 import com.rainday.movieexplorer.domain.model.Genre
 import com.rainday.movieexplorer.domain.model.Movie
 import com.rainday.movieexplorer.domain.model.MovieDetail
+import com.rainday.movieexplorer.domain.model.MovieTrailer
+import com.rainday.movieexplorer.domain.model.Review
 import java.util.Locale
 
 fun Genre.toUiModel(): GenreUiModel {
@@ -49,4 +51,22 @@ fun List<Movie>.toUiModel(): List<MovieUiModel> =
 
 @JvmName("genreListMapper")
 fun List<Genre>.toUiModel(): List<GenreUiModel> =
+    map { it.toUiModel() }
+
+fun MovieTrailer.toUiModel(): MovieTrailerUiModel {
+    return MovieTrailerUiModel(
+        youtubeId = youtubeKey
+    )
+}
+
+fun Review.toUiModel(): ReviewUiModel {
+    return ReviewUiModel(
+        authorText = "By $author",
+        contentPreview = content,
+        dateText = dateText.substringBefore("T")
+    )
+}
+
+@JvmName("reviewListMapper")
+fun List<Review>.toUiModels(): List<ReviewUiModel> =
     map { it.toUiModel() }

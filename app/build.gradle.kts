@@ -97,4 +97,6 @@ dependencies {
     implementation(libs.kotlinx.collections.immutable)
 
     implementation(libs.compose.material.icons.extended)
+
+    implementation(libs.android.youtube.player)
 }

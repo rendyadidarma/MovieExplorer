@@ -17,6 +17,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
@@ -41,6 +42,8 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import coil.compose.AsyncImage
 import com.rainday.movieexplorer.data.repository.RepositoryProvider.movieRepository
 import com.rainday.movieexplorer.ui.ViewModelFactory
+import com.rainday.movieexplorer.ui.detail.component.ReviewItem
+import com.rainday.movieexplorer.ui.detail.component.YoutubeTrailer
 import com.rainday.movieexplorer.ui.theme.MovieExplorerTheme
 
 @Composable
@@ -228,9 +231,9 @@ fun DetailScreen(
                         style = MaterialTheme.typography.bodyMedium
                     )
 
-                    Spacer(modifier = Modifier.height(24.dp))
-
                     state.movie.homepage?.takeIf { it.isNotBlank() }?.let { url ->
+                        Spacer(modifier = Modifier.height(24.dp))
+
                         OutlinedButton(
                             onClick = {
                                 val intent = Intent(
@@ -245,7 +248,47 @@ fun DetailScreen(
                         }
                     }
 
-                    Spacer(modifier = Modifier.height(24.dp))
+                    state.trailer?.let { trailer ->
+                        Spacer(modifier = Modifier.height(32.dp))
+
+                        Text(
+                            text = "Trailer",
+                            style = MaterialTheme.typography.titleMedium
+                        )
+
+                        Spacer(modifier = Modifier.height(12.dp))
+
+                        YoutubeTrailer(
+                            videoId = trailer.youtubeId
+                        )
+                    }
+
+                    Spacer(modifier = Modifier.height(32.dp))
+
+                    Text(
+                        text = "Reviews",
+                        style = MaterialTheme.typography.titleMedium
+                    )
+
+                    Spacer(modifier = Modifier.height(8.dp))
+
+                    if (state.reviews.isEmpty()) {
+                        Text(
+                            text = "No reviews available",
+                            style = MaterialTheme.typography.bodyMedium,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                    } else {
+                        state.reviews.forEach { review ->
+                            ReviewItem(
+                                author = review.authorText,
+                                content = review.contentPreview
+                            )
+                            HorizontalDivider()
+                        }
+                    }
+
+                    Spacer(modifier = Modifier.height(8.dp))
                 }
             }
         }

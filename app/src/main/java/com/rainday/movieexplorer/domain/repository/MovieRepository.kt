@@ -4,6 +4,8 @@ import com.rainday.movieexplorer.core.network.NetworkResult
 import com.rainday.movieexplorer.domain.model.Genre
 import com.rainday.movieexplorer.domain.model.Movie
 import com.rainday.movieexplorer.domain.model.MovieDetail
+import com.rainday.movieexplorer.domain.model.MovieTrailer
+import com.rainday.movieexplorer.domain.model.Review
 
 interface MovieRepository {
     suspend fun getGenres(): NetworkResult<List<Genre>>
@@ -16,4 +18,13 @@ interface MovieRepository {
     suspend fun getMovieDetail(
         movieId: Int
     ): NetworkResult<MovieDetail>
+
+    suspend fun getMovieTrailer(
+        movieId: Int
+    ): NetworkResult<MovieTrailer?>
+
+    suspend fun getMovieReviews(
+        movieId: Int,
+        page: Int
+    ): NetworkResult<List<Review>>
 }
