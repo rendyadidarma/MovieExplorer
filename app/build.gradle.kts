@@ -1,3 +1,12 @@
+import java.util.Properties
+
+val localProperties = Properties().apply {
+    val file = rootProject.file("local.properties")
+    if (file.exists()) {
+        load(file.inputStream())
+    }
+}
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.compose)
@@ -24,13 +33,13 @@ android {
         buildConfigField(
             "String",
             "TMDB_READ_TOKEN",
-            "\"${project.properties["TMDB_READ_TOKEN"]}\""
+            "\"${localProperties.getProperty("TMDB_READ_TOKEN") ?: ""}\""
         )
 
         buildConfigField(
             "String",
             "TMDB_API_KEY",
-            "\"${project.properties["TMDB_API_KEY"]}\""
+            "\"${localProperties.getProperty("TMDB_API_KEY") ?: ""}\""
         )
     }
 
@@ -65,31 +74,27 @@ dependencies {
     debugImplementation(libs.androidx.compose.ui.tooling)
     debugImplementation(libs.androidx.compose.ui.test.manifest)
 
-    // --- Networking ---
     implementation(libs.retrofit)
     implementation(libs.logging.interceptor)
     implementation(libs.converter.gson)
     implementation(libs.converter.kotlinx.serialization)
     implementation(libs.converter.scalars)
 
-    // --- Lifecycle / ViewModel ---
     implementation(libs.androidx.lifecycle.viewmodel.ktx)
     implementation(libs.androidx.lifecycle.viewmodel.compose)
 
-    // --- Coroutines ---
     implementation(libs.kotlinx.coroutines.core)
     implementation(libs.kotlinx.coroutines.android)
 
-    // --- Image loading ---
     implementation(libs.coil)
     implementation(libs.coil.compose)
 
-    // --- Navigation 3 (experimental) ---
     implementation(libs.androidx.navigation3.runtime)
     implementation(libs.androidx.navigation3.ui)
     implementation(libs.androidx.navigation3.viewmodel)
 
-    // --- Kotlinx ---
     implementation(libs.kotlinx.serialization.json)
     implementation(libs.kotlinx.collections.immutable)
+
+    implementation(libs.compose.material.icons.extended)
 }

@@ -1,6 +1,6 @@
 package com.rainday.movieexplorer.data.remote.api
 
-import com.rainday.movieexplorer.data.remote.dto.GenreDto
+import com.rainday.movieexplorer.data.remote.dto.GenreResponseDto
 import com.rainday.movieexplorer.data.remote.dto.MovieDetailDto
 import com.rainday.movieexplorer.data.remote.dto.MovieResponseDto
 import retrofit2.http.GET
@@ -10,7 +10,7 @@ import retrofit2.http.Query
 interface TMDBApi {
 
     @GET("genre/movie/list")
-    suspend fun getGenres(): List<GenreDto>
+    suspend fun getGenres(): GenreResponseDto
 
     @GET("discover/movie")
     suspend fun discoverMovies(
