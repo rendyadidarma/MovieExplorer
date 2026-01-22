@@ -20,6 +20,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
+import androidx.compose.runtime.snapshotFlow
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -33,6 +34,8 @@ import com.rainday.movieexplorer.ui.genre.colorFromId
 import com.rainday.movieexplorer.ui.genre.contentColorFor
 import com.rainday.movieexplorer.ui.model.GenreUiModel
 import com.rainday.movieexplorer.ui.theme.MovieExplorerTheme
+import kotlinx.coroutines.flow.distinctUntilChanged
+import kotlinx.coroutines.flow.filter
 
 @Composable
 fun DiscoverRoot(
@@ -53,7 +56,8 @@ fun DiscoverRoot(
     DiscoverScreen(
         state = state,
         genre = genre,
-        navigateToDetail = navigateToDetail
+        navigateToDetail = navigateToDetail,
+        onAction = viewModel::onAction
     )
 }
 
@@ -61,6 +65,7 @@ fun DiscoverRoot(
 @Composable
 fun DiscoverScreen(
     state: DiscoverState,
+    onAction: (DiscoverAction) -> Unit,
     genre: GenreUiModel,
     navigateToDetail: (Int) -> Unit
 ) {
@@ -125,8 +130,35 @@ fun DiscoverScreen(
                             .padding(horizontal = 8.dp)
                     )
                 }
+
+                if (state.isLoadingMore) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillParentMaxWidth()
+                                .padding(vertical = 16.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            CircularProgressIndicator()
+                        }
+                    }
+                }
             }
         }
+    }
+
+    LaunchedEffect(listState) {
+        snapshotFlow {
+            val layout = listState.layoutInfo
+            val lastVisible = layout.visibleItemsInfo.lastOrNull()?.index ?: 0
+            val total = layout.totalItemsCount
+            lastVisible >= total - 3
+        }
+            .distinctUntilChanged()
+            .filter { it }
+            .collect {
+                onAction(DiscoverAction.LoadNext(genreId = genre.id))
+            }
     }
 }
 
@@ -137,7 +169,10 @@ private fun Preview() {
         DiscoverScreen(
             state = DiscoverState(),
             genre = GenreUiModel("", ""),
-            navigateToDetail = {}
+            navigateToDetail = {},
+            onAction = {
+
+            }
         )
     }
 }

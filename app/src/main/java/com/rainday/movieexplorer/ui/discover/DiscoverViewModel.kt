@@ -25,10 +25,14 @@ class DiscoverViewModel(
                 _state.update { it.copy(genreId = action.genreId) }
                 getMovies(action.genreId, action.page)
             }
+
+            is DiscoverAction.LoadNext -> {
+                loadNextPage(action.genreId)
+            }
         }
     }
 
-    fun getMovies(genreId: String, page: Int = 1) {
+    private fun getMovies(genreId: String, page: Int = 1) {
         _state.update { it.copy(isLoading = true) }
         viewModelScope.launch {
             when (val result = repository.discoverMovies(genreId, page)) {
@@ -47,6 +51,44 @@ class DiscoverViewModel(
                         it.copy(
                             error = result.error,
                             isLoading = false
+                        )
+                    }
+                }
+            }
+        }
+    }
+
+
+    private fun loadNextPage(genreId: String) {
+        viewModelScope.launch {
+            if (_state.value.isLoadingMore || _state.value.endReached) return@launch
+
+            _state.update {
+                it.copy(isLoadingMore = true)
+            }
+            when (val result = repository.discoverMovies(genreId, _state.value.page)) {
+                is NetworkResult.Success -> {
+                    val newMovies = result.data.map { it.toUiModel() }
+
+                    val merged = (_state.value.movies + newMovies)
+                        .distinctBy { it.id }
+
+                    _state.update {
+                        it.copy(
+                            movies = merged,
+                            page = _state.value.page + 1,
+                            isLoadingMore = false,
+                            endReached = newMovies.isEmpty(),
+                            error = ""
+                        )
+                    }
+                }
+
+                is NetworkResult.Error -> {
+                    _state.update {
+                        it.copy(
+                            isLoadingMore = false,
+                            error = result.error
                         )
                     }
                 }
