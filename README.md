@@ -15,6 +15,12 @@ MovieExplorer is an Android app built in **Kotlin** that allows users to explore
 
 ---
 
+## Preview
+<img width="447" height="985" alt="image" src="https://github.com/user-attachments/assets/e08c4d50-a5f4-4b0d-855a-f7099c87aed5" />
+<img width="442" height="1019" alt="image" src="https://github.com/user-attachments/assets/c502f7c0-7b2e-4a77-9ffa-af578a00719f" />
+<img width="454" height="1003" alt="image" src="https://github.com/user-attachments/assets/48b7c99b-2e2a-496b-8abd-fc4a4b46db8f" />
+<img width="465" height="1028" alt="image" src="https://github.com/user-attachments/assets/b7b8e020-7484-4d3d-883a-61e4e79acc3e" />
+
 ## Requirements
 
 - Android Studio Flamingo or newer  
